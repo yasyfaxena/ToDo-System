@@ -11,6 +11,8 @@ const container = createContainer();
 const TodoRepository = require("./repositories/todo.repository");
 const TodoService = require("./services/todo.service");
 const TodoController = require("./controllers/todo.controller");
+const AIService = require("./services/ai.service");
+const AIController = require("./controllers/ai.controller");
 
 container.register({
   prisma: asValue(prisma),
@@ -26,6 +28,10 @@ container.register({
   todoService: asClass(TodoService).singleton(),
 
   todoController: asClass(TodoController).singleton(),
+
+  aiService: asClass(AIService).singleton(),
+
+  aiController: asClass(AIController).singleton(),
 });
 
 module.exports = container;

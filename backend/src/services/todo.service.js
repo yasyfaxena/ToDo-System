@@ -1,3 +1,5 @@
+const AppError = require("../errors/AppError");
+
 class TodoService {
   constructor({ todoRepository }) {
     this.todoRepository = todoRepository;
@@ -18,15 +20,11 @@ class TodoService {
     const todo = await this.todoRepository.findById(todoId);
 
     if (!todo) {
-      const error = new Error("Todo not found");
-      error.statusCode = 404;
-      throw error;
+      throw new AppError("Todo not found", 404);
     }
 
     if (todo.userId !== userId) {
-      const error = new Error("Forbidden");
-      error.statusCode = 403;
-      throw error;
+      throw new AppError("Forbidden", 403);
     }
 
     return todo;
@@ -36,15 +34,11 @@ class TodoService {
     const todo = await this.todoRepository.findById(todoId);
 
     if (!todo) {
-      const error = new Error("Todo not found");
-      error.statusCode = 404;
-      throw error;
+      throw new AppError("Todo not found", 404);
     }
 
     if (todo.userId !== userId) {
-      const error = new Error("Forbidden");
-      error.statusCode = 403;
-      throw error;
+      throw new AppError("Forbidden", 403);
     }
 
     return this.todoRepository.update(todoId, data);
@@ -54,15 +48,11 @@ class TodoService {
     const todo = await this.todoRepository.findById(todoId);
 
     if (!todo) {
-      const error = new Error("Todo not found");
-      error.statusCode = 404;
-      throw error;
+      throw new AppError("Todo not found", 404);
     }
 
     if (todo.userId !== userId) {
-      const error = new Error("Forbidden");
-      error.statusCode = 403;
-      throw error;
+      throw new AppError("Forbidden", 403);
     }
 
     return this.todoRepository.delete(todoId);

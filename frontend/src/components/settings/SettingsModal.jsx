@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   User,
-  Palette,
   Shield,
   LogOut,
   X,
@@ -21,15 +20,6 @@ function SettingsModal({ open, onClose }) {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-
-  const [theme, setTheme] = useState(
-    localStorage.getItem("taskflow_theme") || "light"
-  );
-
-  const [language, setLanguage] = useState(
-    localStorage.getItem("taskflow_language") || "English"
-  );
-
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +30,8 @@ function SettingsModal({ open, onClose }) {
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
+
+  const [logoutModal, setLogoutModal] = useState(false);
 
   const [message, setMessage] = useState({
     open: false,
@@ -88,14 +80,11 @@ function SettingsModal({ open, onClose }) {
         user: result.user,
       });
 
-      localStorage.setItem("taskflow_theme", theme);
-      localStorage.setItem("taskflow_language", language);
-
       setSaved(true);
 
       showMessage(
         "Changes saved",
-        "Your profile and preferences have been updated successfully."
+        "Your profile has been updated successfully."
       );
 
       setTimeout(() => {
@@ -189,7 +178,6 @@ function SettingsModal({ open, onClose }) {
       setDeleteModal(false);
 
       onClose?.();
-
       logout();
     } catch (error) {
       showMessage(
@@ -204,6 +192,7 @@ function SettingsModal({ open, onClose }) {
   };
 
   const handleLogout = () => {
+    setLogoutModal(false);
     onClose?.();
     logout();
   };
@@ -221,7 +210,7 @@ function SettingsModal({ open, onClose }) {
               </h2>
 
               <p className="mt-2 text-sm text-slate-400">
-                Manage your TaskFlow preferences
+                Manage your TaskFlow account
               </p>
             </div>
 
@@ -237,7 +226,6 @@ function SettingsModal({ open, onClose }) {
           {/* Content */}
           <div className="overflow-y-auto px-6 py-7">
             <div className="space-y-10">
-
               {/* Profile */}
               <section>
                 <div className="mb-5 flex items-center gap-3">
@@ -288,64 +276,6 @@ function SettingsModal({ open, onClose }) {
                 </div>
               </section>
 
-              {/* Preferences */}
-              <section>
-                <div className="mb-5 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                    <Palette size={18} />
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold text-slate-900">
-                      Preferences
-                    </h3>
-
-                    <p className="mt-1 text-xs text-slate-400">
-                      Customize your workspace
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">
-                      Theme
-                    </label>
-
-                    <select
-                      value={theme}
-                      onChange={(event) =>
-                        setTheme(event.target.value)
-                      }
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-900"
-                    >
-                      <option value="light">Light</option>
-                      <option value="dark">Dark</option>
-                      <option value="system">System</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">
-                      Language
-                    </label>
-
-                    <select
-                      value={language}
-                      onChange={(event) =>
-                        setLanguage(event.target.value)
-                      }
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-900"
-                    >
-                      <option value="English">English</option>
-                      <option value="Indonesian">
-                        Indonesian
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </section>
-
               {/* Account */}
               <section>
                 <div className="mb-5 flex items-center gap-3">
@@ -365,14 +295,16 @@ function SettingsModal({ open, onClose }) {
                 </div>
 
                 <div className="space-y-3">
-
                   {/* Change Password */}
                   <button
                     type="button"
                     onClick={() => setPasswordModal(true)}
                     className="flex w-full items-center gap-3 rounded-xl border border-slate-200 px-4 py-3.5 text-left transition hover:bg-slate-50"
                   >
-                    <Lock size={17} className="text-slate-500" />
+                    <Lock
+                      size={17}
+                      className="text-slate-500"
+                    />
 
                     <div>
                       <p className="text-sm font-semibold text-slate-800">
@@ -391,7 +323,10 @@ function SettingsModal({ open, onClose }) {
                     onClick={() => setDeleteModal(true)}
                     className="flex w-full items-center gap-3 rounded-xl border border-red-100 px-4 py-3.5 text-left transition hover:bg-red-50"
                   >
-                    <Trash2 size={17} className="text-red-500" />
+                    <Trash2
+                      size={17}
+                      className="text-red-500"
+                    />
 
                     <div>
                       <p className="text-sm font-semibold text-red-600">
@@ -407,7 +342,7 @@ function SettingsModal({ open, onClose }) {
                   {/* Sign Out */}
                   <button
                     type="button"
-                    onClick={handleLogout}
+                    onClick={() => setLogoutModal(true)}
                     className="flex w-full items-center gap-3 rounded-xl border border-slate-200 px-4 py-3.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50"
                   >
                     <LogOut size={17} />
@@ -421,7 +356,9 @@ function SettingsModal({ open, onClose }) {
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-6 py-4">
             <p className="text-xs text-slate-400">
-              {saved ? "Changes saved ✓" : "TaskFlow Settings"}
+              {saved
+                ? "Changes saved ✓"
+                : "TaskFlow Settings"}
             </p>
 
             <div className="flex gap-3">
@@ -526,7 +463,10 @@ function SettingsModal({ open, onClose }) {
             <div className="flex items-start justify-between">
               <div>
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-red-50">
-                  <Trash2 size={20} className="text-red-600" />
+                  <Trash2
+                    size={20}
+                    className="text-red-600"
+                  />
                 </div>
 
                 <h3 className="text-lg font-bold text-slate-950">
@@ -571,6 +511,42 @@ function SettingsModal({ open, onClose }) {
                 className="flex-1 rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50"
               >
                 {loading ? "Deleting..." : "Delete account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sign Out Confirmation */}
+      {logoutModal && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
+              <LogOut size={20} className="text-slate-700" />
+            </div>
+
+            <h3 className="mt-5 text-lg font-bold text-slate-950">
+              Sign out?
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Are you sure you want to sign out of your TaskFlow
+              account?
+            </p>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setLogoutModal(false)}
+                className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="flex-1 rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                Sign out
               </button>
             </div>
           </div>

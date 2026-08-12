@@ -9,6 +9,7 @@ const swaggerSpec = require("./docs/swagger");
 const container = require("./container");
 const authRoutes = require("./routes/auth.routes");
 const todoRoutes = require("./routes/todo.routes");
+const aiRoutes = require("./routes/ai.routes");
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Todo routes
 app.use("/api/todos", todoRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
